@@ -118,7 +118,8 @@ int main() {
 	bench_dataset<float, 2>("iris.data.csv", 3);
 	bench_dataset<float, 2>("s1.data.csv", 15);
 	bench_dataset<float, 2>("birch3.data.csv", 100);
-	bench_dataset<float, 128>("dim128.data.csv", 16);
+	//bench_dataset<float, 128>("dim128.data.csv", 16);
+	bench_dataset<float, 2>("eggs.csv", 27);
 
 	return 0;
 }

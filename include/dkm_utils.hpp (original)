@@ -10,11 +10,6 @@
 #include <iterator>
 #include <regex>
 
-#include <sstream>
-#include <iomanip>
-#include <iostream>
-
-
 namespace dkm {
 
 namespace details {
@@ -191,25 +186,6 @@ std::vector<std::array<T, N>> load_csv(const std::string& path) {
 		std::transform(split.begin(), split.end(), row.begin(), [](const std::string& in) -> T {
 			return static_cast<T>(std::stod(in));
 		});
-		data.push_back(row);
-	}
-	return data;
-}
-
-//Load capacitated CSV
-template <typename T, size_t N>
-std::vector<std::array<T, N>> load_capacitated_csv(const std::string& path) {
-	std::ifstream file(path);
-	std::vector<std::array<T, N>> data;
-	int i = 0;
-	for (auto it = std::istream_iterator<std::string>(file); it != std::istream_iterator<std::string>(); ++it) {
-		auto split = details::split_commas(*it);
-		assert(split.size() == (N+1)); // number of values must match rows in file + WEIGHTS ROWS!!
-		std::array<T, N> row;
-		std::transform(split.begin(), split.at(N), row.begin(), [](const std::string& in) -> T {
-			return static_cast<T>(std::stod(in));
-		});
-		std::cout << std::endl << i++ << std::endl << row[0] << ","<<row[1]<<","<<row[2] << std::endl;
 		data.push_back(row);
 	}
 	return data;
