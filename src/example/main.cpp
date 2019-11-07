@@ -72,24 +72,30 @@ int main(int argc, char* argv[]) {
 	// int cap2 = std::get<4>(params);
 	// int cap3 = std::get<5>(params);
 	
-	auto data = dkm::load_capacitated_csv<float, 2>(path);
+	auto data = dkm::load_capacitated_csv<double, 2>(path);
+	auto capacities = dkm::load_csv_capacities<int, 2>(path);
 	//std::vector<std::array<float, 2>> data{{1.f, 1.f}, {2.f, 2.f}, {1200.f, 1200.f}, {2.f, 2.f}};
 	auto cluster_data = dkm::kmeans_lloyd(data, k);
+	int *capacitySums = new int[k];
+	memset(capacitySums, 0, sizeof *capacitySums);
 
 
 	ofstream outfile;
 	outfile.open(outfilename, ios::out);
 
-	for (const auto& mean : std::get<0>(cluster_data)) {
-		outfile << "Mean," << mean[0] << "," << mean[1] << std::endl;
-	}
-
 	int i = 0;
 	for (const auto& point : data) {
 		std::stringstream value;
 		auto label = std::get<1>(cluster_data)[i];
-		value << "Point," << point[0] << "," << point[1] << "," << label;
+		auto cap1 = capacities[i][0];
+		capacitySums[label] += cap1;
+		value << "Point," << point[0] << "," << point[1] << "," << label << "," << cap1;
 		outfile << value.str() << std::endl;
+		i++;
+	}
+	i=0;
+	for (const auto& mean : std::get<0>(cluster_data)) {
+		outfile << "Mean," << mean[0] << "," << mean[1] << "," << capacitySums[i] << std::endl;
 		i++;
 	}
 	std::cout << "Done, result written to " << outfilename << std::endl;

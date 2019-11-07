@@ -206,10 +206,31 @@ std::vector<std::array<T, N>> load_capacitated_csv(const std::string& path) {
 		auto split = details::split_commas(*it);
 		assert(split.size() == (N+1)); // number of values must match rows in file + WEIGHTS ROWS!!
 		std::array<T, N> row;
-		std::transform(split.begin(), split.at(N), row.begin(), [](const std::string& in) -> T {
+		//                            tambien se puede usar sintaxis de + para random access vector iterators
+		std::transform(split.begin(), std::next(split.begin(),N), row.begin(), [](const std::string& in) -> T {
 			return static_cast<T>(std::stod(in));
 		});
-		std::cout << std::endl << i++ << std::endl << row[0] << ","<<row[1]<<","<<row[2] << std::endl;
+		std::cout << std::endl << i++ << std::endl << row[0] << ","<<row[1]<< std::endl;
+		data.push_back(row);
+	}
+	return data;
+}
+
+//loads capacities only
+template <typename T, size_t N>
+std::vector<std::array<T, N>> load_csv_capacities(const std::string& path) {
+	std::ifstream file(path);
+	std::vector<std::array<T, N>> data;
+	//int i = 0;
+	for (auto it = std::istream_iterator<std::string>(file); it != std::istream_iterator<std::string>(); ++it) {
+		auto split = details::split_commas(*it);
+		assert(split.size() == (N+1)); // number of values must match rows in file + WEIGHTS ROWS!!
+		std::array<T, N> row;
+		//                            tambien se puede usar sintaxis de + para random access vector iterators
+		std::transform(std::next(split.begin(),N), split.end(), row.begin(), [](const std::string& in) -> T {
+			return static_cast<T>(std::stoi(in));
+		});
+		//std::cout << std::endl << i++ << std::endl << row[0] << ","<<row[1]<< std::endl;
 		data.push_back(row);
 	}
 	return data;
